@@ -1,0 +1,46 @@
+name: "Build, Test and Deploy"
+on:
+  push:
+    branches: [main]
+permissions:
+  id-token: write # needed for obtaining provider token for deployment
+  contents: read # needed for checking out repository code
+jobs:
+  Build-Test:
+    runs-on: macos-latest
+    defaults:
+      run:
+        working-directory: lambda
+    steps:
+      - name: Checkout repository code
+        uses: actions/checkout@v4
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.24'
+      - name: Print version
+        run: go version
+  Deploy:
+    environment: Production
+    runs-on: macos-latest
+    defaults:
+      run:
+        working-directory: infra
+    steps:
+      - name: Checkout repository code
+        uses: actions/checkout@v4
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.24'
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4.2.0
+        with:
+          aws-region: 'eu-north-1'
+          role-to-assume: arn:aws:iam::154704856875:role/bmbot-github-actions-production-deployment
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+      - name: Terraform init
+        run: terraform init
+      - name: Terraform apply
+        run: terraform apply -auto-approve
