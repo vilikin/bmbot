@@ -39,8 +39,8 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4.2.0
         with:
-          aws-region: 'eu-north-1'
-          role-to-assume: arn:aws:iam::154704856875:role/bmbot-github-actions-production-deployment
+          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: ${{ vars.AWS_DEPLOYMENT_ROLE_ARN }}
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
       - name: Terraform init
