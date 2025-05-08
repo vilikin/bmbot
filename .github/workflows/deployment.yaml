@@ -22,6 +22,7 @@ jobs:
       - name: Print version
         run: go version
   Deploy:
+    needs: [Build-Test]
     environment: Production
     runs-on: macos-latest
     defaults:
