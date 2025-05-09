@@ -38,11 +38,7 @@ module "hello_world_lambda" {
       path = "${path.module}/../lambda/"
       commands = [
         "GOOS=linux GOARCH=arm64 CGO_ENABLED=0 go build -tags lambda.norpc -o ./.build/bootstrap ./handler/helloworld/main.go",
-        ":zip",
-      ]
-      patterns = [
-        "!.*",
-        ".build/bootstrap",
+        ":zip .build",
       ]
     }
   ]
